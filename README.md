@@ -12,6 +12,12 @@ It's quite simple and unelegant code. Rather a script than a program. Cleanups, 
 
 Usage:
 
-	nmap -PN -n -sL 8.8.8.8/24 | grep Host | cut -d ' ' -f2 > test.ips
-	sudo ./netmap.py -i IPLIST.txtdot -T
+	nmap -PN -n -sL 8.8.8.8/28 -oG - | grep Host| awk '{print $2}' > test.ips
+	sudo ./netmap.py -vv -i test.ips
 	dot -Tpng filename.dot -o outfile.png
+
+Installation:
+On a clean Kali linux I needed:
+
+	apt-get install python-pygraphviz
+
