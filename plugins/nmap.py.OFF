@@ -1,0 +1,55 @@
+#!/usr/bin/python
+import socket
+import os
+
+# this function should have a .audience()
+# the main app will use this to determine for what ip's the 'work' should be started
+def audience():
+    ''' the audience function in a plugin will be called before we pass ip's and ipClasses to this plugin
+        it is used to determine what ip's whould be passed to the work() function.
+        ['all','endpoint','router'] are the options at this moment
+
+        default is all, os if this function does not exist or returns an expected value the 'work' function
+        will be started for all ip's
+    '''
+    return ('all')
+
+def name():
+    return ('nmap')
+
+def work(ip, ipclass):
+    ''' The work() is going to do all the heavy work. it will be called from a threaded model so make sure
+        not to write code blocking a I/O object that would be needed by the other threads running this
+        function.
+
+        In this specific example we're do a reverselookup for the ip to display a hostname
+    '''
+    cmd = "/usr/bin/nmap -oG - -sS -O -PN %s"%(ip)
+    cmd_out = os.popen(cmd).readlines()
+
+
+    results = []
+    for line in cmd_out:
+        if not (line[0] == '#'):
+            results = cmd_out[1].split('\t') 
+
+    ret = False
+    for result in results:
+        if 'Ports' in result:
+        #Ports: 22/open/tcp//ssh///, 80/open/tcp//http///, 443/open/tcp//https///
+            for port in result.split(' '):
+                if 'open' in port:
+                    if ret:
+                        ret = ret + " " + port.split('/')[0]
+                    else: ret =  port.split('/')[0]
+        if 'OS:' in result:
+        #OS: Linux 2.6.13 - 2.6.24
+            if ret:
+                ret = result.split(':',1)[1].strip().replace("|","-") + ": " + ret
+            else: ret = result.split()[1].strip().replace("|","-") + ":"
+
+    return ret
+
+if __name__=='__main__':
+    #print work("127.0.0.1",0)
+    print work("94.142.245.50",0)
