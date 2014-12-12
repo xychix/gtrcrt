@@ -11,6 +11,7 @@ The results are saved in a .dot file that can in turn be parsed into png (or som
 It's quite simple and unelegant code. Rather a script than a program. Cleanups, smart plugins etc are welcome!
 
 Usage:
+
 	nmap -PN -n -sL 8.8.8.8/24 | grep Host | cut -d ' ' -f2 > test.ips
 	sudo ./netmap.py -i IPLIST.txtdot -T
 	dot -Tpng filename.dot -o outfile.png
