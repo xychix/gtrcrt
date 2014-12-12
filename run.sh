@@ -1,4 +1,4 @@
-nmap -PN -n -sL $1 | grep report | awk '{print $5}'> ips/$2.ips
+nmap -PN -n -sL $1 -oG - | grep Host| awk '{print $2}' > ips/$2.ips
 sudo ./netmap.py -i ips/$2.ips  -p -vvv
 sudo chown -R www-data:www-data ./img/*
 sudo chmod 664 ./img/*
