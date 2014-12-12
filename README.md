@@ -14,7 +14,8 @@ Usage:
 
 	nmap -PN -n -sL 8.8.8.8/28 -oG - | grep Host| awk '{print $2}' > test.ips
 	sudo ./netmap.py -vv -i test.ips
-	dot -Tpng filename.dot -o outfile.png
+	cd img
+	dot -Tpng test.dot -o test.png
 
 Installation:
 On a clean Kali linux I needed:
